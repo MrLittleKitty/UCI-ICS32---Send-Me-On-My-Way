@@ -3,6 +3,10 @@ import connectfour_library as lib
 
 
 def start_game() -> None:
+    """
+    The main entry point for the program.
+    Starts the game of Connect Four.
+    """
     return
 
 

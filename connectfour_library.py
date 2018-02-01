@@ -1,7 +1,7 @@
 import connectfour as lib
 
-DROP_TOP = -2
-POP_BOTTOM = -3
+DROP_TOP = 'DROP'
+POP_BOTTOM = 'POP'
 
 
 def get_player_string(player: int) -> str:

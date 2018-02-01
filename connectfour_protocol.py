@@ -65,15 +65,57 @@ def send_move(move: str, col: int) -> str:
             write_stream(pop + ' ' + str(col) + client_end_of_line)
 
         global in_stream
-        response = in_stream.readLine()
+        response = in_stream.readline()
 
-        if response != SUCCESS and response != ILLEGAL and response != WINNER_RED and response != WINNER_YELLOW:
+        if response == ILLEGAL:
+            response = in_stream.readline()
+            if response != ('READY'+server_end_of_line):
+                terminate_connection()
+                return TERMINATED
+            return ILLEGAL
+        elif response != SUCCESS and response != WINNER_RED and response != WINNER_YELLOW:
             terminate_connection()
             return TERMINATED
 
         return response
     except:
         terminate_connection()
+        return TERMINATED
+
+
+def receive_move() -> (str, int) or TERMINATED:
+    """
+
+    :return:
+    """
+    try:
+        global in_stream
+        response = in_stream.readline()
+        move = None
+        col = None
+        if response[0:4] == 'DROP':
+            move = lib.DROP_TOP
+            value = response[5:].strip()
+            col = int(value)
+        elif response[0:3] == 'POP':
+            move = lib.POP_BOTTOM
+            value = response[4:].strip()
+            col = int(value)
+        else:
+            terminate_connection()
+            return TERMINATED
+
+        response = in_stream.readline()
+        if response == WINNER_RED or response == WINNER_YELLOW:
+            terminate_connection()
+        elif response != ('READY'+server_end_of_line):
+            terminate_connection()
+            return TERMINATED
+
+        return move, col
+    except:
+        terminate_connection()
+        return TERMINATED
 
 
 def write_stream(text: str) -> None:

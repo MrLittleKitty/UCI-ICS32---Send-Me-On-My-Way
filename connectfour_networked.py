@@ -9,8 +9,11 @@ def start_game() -> None:
     Starts the game of Connect Four.
     """
     print("Welcome to ICS 32 Connect Four!")
-    host, port = get_address_and_port()
-    username = get_username()
+    # host, port = get_address_and_port()
+    # username = get_username()
+    host = 'woodhouse.ics.uci.edu'
+    port = 4444
+    username = 'moomers'
 
     if not network.connect_to_game_server(host, port, username):
         print('A connection could not be established with the server')
@@ -26,7 +29,7 @@ def start_game() -> None:
             print('')
             while True:
                 col, move = lib.prompt_and_get_move(gameState)
-                response = network.send_move(move, col)
+                response = network.send_move(move, col+1)
                 if response == network.TERMINATED:
                     connection_terminated()
                     return
@@ -35,8 +38,13 @@ def start_game() -> None:
                 else:
                     gameState = lib.execute_move(gameState, col, move)
                     break
+
         else:
-            continue
+            lib.print_game_state(gameState)
+            print('')
+            lib.print_turn(gameState)
+            move, col = network.receive_move()
+            gameState = lib.execute_move(gameState, col-1, move)
 
     winner = connectfour.winner(gameState)
     print()
@@ -48,6 +56,7 @@ def start_game() -> None:
 
 def connection_terminated() -> None:
     ''' '''
+    network.terminate_connection()
     print('The connection to the server was terminated')
 
 

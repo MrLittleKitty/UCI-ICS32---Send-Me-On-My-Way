@@ -62,13 +62,21 @@ def print_game_state(state: lib.GameState) -> None:
         print('')
 
 
+def print_turn(state: lib.GameState) -> None:
+    """
+
+    :param state:
+    :return:
+    """
+    print('It is the ' + get_player_string(state.turn) + ' players turn')
+
 def prompt_and_get_move(state: lib.GameState) -> (int, str):
     """
     Prompts the current player to enter a valid column number and a valid move type
     :param state: The current state of the game
     :return: A tuple whose first value is the entered column number and whose second value is the move type
     """
-    print('It is the ' + get_player_string(state.turn) + ' players turn')
+    print_turn(state)
     while (True):
         print('Please input a column number (1-7) and a move (drop,pop). Example: 3 drop')
         line = input().strip()

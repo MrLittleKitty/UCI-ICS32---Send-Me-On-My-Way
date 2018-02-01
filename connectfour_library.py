@@ -32,6 +32,22 @@ def get_player_symbol(player: int) -> str:
         return '.'
 
 
+def execute_move(state: lib.GameState, col: int, move: str) -> lib.GameState:
+    """
+
+    :param state:
+    :param col:
+    :param move:
+    :return:
+    """
+    if move == DROP_TOP:
+        return lib.drop(state, col)
+    elif move == POP_BOTTOM:
+        return lib.pop(state, col)
+    else:
+        raise lib.InvalidMoveError()
+
+
 def print_game_state(state: lib.GameState) -> None:
     """
     Prints the contents of the given GameState to the console in a human readable way

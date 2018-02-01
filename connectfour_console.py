@@ -15,12 +15,7 @@ def start_game() -> None:
         while (True):
             col, move = lib.prompt_and_get_move(gameState)
             try:
-                newgameState = None
-                if move == lib.DROP_TOP:
-                    newgameState = connect.drop(gameState, col)
-                else:
-                    newgameState = connect.pop(gameState, col)
-                gameState = newgameState
+                gameState = lib.execute_move(gameState, col, move)
                 break
             except connect.InvalidMoveError:
                 if move == lib.POP_BOTTOM:

@@ -1,5 +1,4 @@
 import socket as socket
-import connectfour as connectfour
 import connectfour_library as lib
 
 client_end_of_line = '\r\n'
@@ -11,10 +10,11 @@ out_stream = None
 drop = 'DROP'
 pop = 'POP'
 
-SUCCESS = 'OKAY'
-ILLEGAL = 'INVALID'
-WINNER_RED = 'WINNER_RED'
-WINNDER_YELLOW = 'WINNER_YELLOW'
+SUCCESS = 'OKAY' + server_end_of_line
+ILLEGAL = 'INVALID' + server_end_of_line
+WINNER_RED = 'WINNER_RED' + server_end_of_line
+WINNER_YELLOW = 'WINNER_YELLOW' + server_end_of_line
+TERMINATED = 'TERMINATED'
 
 
 def connect_to_game_server(address: str, port: str, username: str) -> bool:
@@ -46,18 +46,34 @@ def connect_to_game_server(address: str, port: str, username: str) -> bool:
             return False
 
         return True
-    except OSError as error:
+    except:
+        terminate_connection()
         return False
 
 
-def send_move(type: str, col: int) -> str:
-    if type == lib.DROP_TOP:
-        write_stream(drop + client_end_of_line)
-    elif type == lib.POP_BOTTOM:
-        write_stream(pop + client_end_of_line)
+def send_move(move: str, col: int) -> str:
+    """
 
-    global in_stream
-    response = in_stream.readLine()
+    :param move:
+    :param col:
+    :return:
+    """
+    try:
+        if move == lib.DROP_TOP:
+            write_stream(drop + ' ' + str(col) + client_end_of_line)
+        elif move == lib.POP_BOTTOM:
+            write_stream(pop + ' ' + str(col) + client_end_of_line)
+
+        global in_stream
+        response = in_stream.readLine()
+
+        if response != SUCCESS and response != ILLEGAL and response != WINNER_RED and response != WINNER_YELLOW:
+            terminate_connection()
+            return TERMINATED
+
+        return response
+    except:
+        terminate_connection()
 
 
 def write_stream(text: str) -> None:
@@ -69,3 +85,13 @@ def write_stream(text: str) -> None:
     global out_stream
     out_stream.write(text)
     out_stream.flush()
+
+
+def terminate_connection() -> None:
+    global out_stream
+    global in_stream
+    global connection
+
+    out_stream.close()
+    in_stream.close()
+    connection.close()

@@ -41,9 +41,9 @@ def execute_move(state: lib.GameState, col: int, move: str) -> lib.GameState:
     :return:
     """
     if move == DROP_TOP:
-        return lib.drop(state, col)
+        return lib.drop(state, col - 1)
     elif move == POP_BOTTOM:
-        return lib.pop(state, col)
+        return lib.pop(state, col - 1)
     else:
         raise lib.InvalidMoveError()
 
@@ -70,18 +70,18 @@ def print_turn(state: lib.GameState) -> None:
     """
     print('It is the ' + get_player_string(state.turn) + ' players turn')
 
-def prompt_and_get_move(state: lib.GameState) -> (int, str):
+
+def prompt_and_get_move() -> (int, str):
     """
     Prompts the current player to enter a valid column number and a valid move type
-    :param state: The current state of the game
     :return: A tuple whose first value is the entered column number and whose second value is the move type
     """
-    print_turn(state)
-    while (True):
-        print('Please input a column number (1-7) and a move (drop,pop). Example: 3 drop')
+    while True:
+        print('Please input a move (drop,pop) and acolumn number (1-7). Example: drop 3')
         line = input().strip()
-        colString = line[0:1]
-        move = line[2:]
+
+        move = line[0:4].strip()
+        colString = line[4:].strip()
 
         if not colString.isdigit():
             continue
@@ -90,9 +90,9 @@ def prompt_and_get_move(state: lib.GameState) -> (int, str):
         if colNumber < 1 or colNumber > 7:
             continue
 
-        move = move.strip().lower()
+        move = move.lower()
         if move == 'drop':
-            return colNumber - 1, DROP_TOP
+            return colNumber, DROP_TOP
 
         if move == 'pop':
-            return colNumber - 1, POP_BOTTOM
+            return colNumber, POP_BOTTOM

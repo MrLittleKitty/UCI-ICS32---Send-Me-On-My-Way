@@ -12,8 +12,9 @@ def start_game() -> None:
     while connect.winner(gameState) == connect.NONE:
         lib.print_game_state(gameState)
         print('')
-        while (True):
-            col, move = lib.prompt_and_get_move(gameState)
+        lib.print_turn(gameState)
+        while True:
+            col, move = lib.prompt_and_get_move()
             try:
                 gameState = lib.execute_move(gameState, col, move)
                 break

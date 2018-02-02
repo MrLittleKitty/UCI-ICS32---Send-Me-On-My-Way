@@ -9,11 +9,11 @@ def start_game() -> None:
     Starts the game of Connect Four.
     """
     print("Welcome to ICS 32 Connect Four!")
-    # host, port = get_address_and_port()
-    # username = get_username()
-    host = 'woodhouse.ics.uci.edu'
-    port = 4444
-    username = 'moomers'
+    host, port = get_address_and_port()
+    username = get_username()
+    # host = 'woodhouse.ics.uci.edu'
+    # port = 4444
+    # username = 'moomers'
 
     if not network.connect_to_game_server(host, port, username):
         print('A connection could not be established with the server')
@@ -28,8 +28,8 @@ def start_game() -> None:
             lib.print_game_state(gameState)
             print('')
             while True:
-                col, move = lib.prompt_and_get_move(gameState)
-                response = network.send_move(move, col+1)
+                col, move = lib.prompt_and_get_move()
+                response = network.send_move(move, col)
                 if response == network.TERMINATED:
                     connection_terminated()
                     return
@@ -42,14 +42,21 @@ def start_game() -> None:
         else:
             lib.print_game_state(gameState)
             print('')
-            lib.print_turn(gameState)
             move, col = network.receive_move()
-            gameState = lib.execute_move(gameState, col-1, move)
+            if move == network.TERMINATED:
+                connection_terminated()
+                return
+            gameState = lib.execute_move(gameState, col, move)
+            print('The Yellow player has made the move: ' + move + ' ' + str(col))
 
     winner = connectfour.winner(gameState)
     print()
     lib.print_game_state(gameState)
-    print(lib.get_player_string(winner) + ' has won the game! Congrats!')
+    print('')
+    if winner == connectfour.RED:
+        print('You have won the game! Congrats!')
+    else:
+        print('The Yellow player has won the game.')
     network.terminate_connection()
     return
 

@@ -1,3 +1,4 @@
+# Eric Wolfe 76946154 eawolfe@uci.edu
 import connectfour as connectfour
 import connectfour_library as lib
 import connectfour_protocol as network
@@ -6,14 +7,11 @@ import connectfour_protocol as network
 def start_game() -> None:
     """
     The main entry point for the program.
-    Starts the game of Connect Four.
+    Starts the networked version of the connect four game.
     """
     print("Welcome to ICS 32 Connect Four!")
     host, port = get_address_and_port()
     username = get_username()
-    # host = 'woodhouse.ics.uci.edu'
-    # port = 4444
-    # username = 'moomers'
 
     if not network.connect_to_game_server(host, port, username):
         print('A connection could not be established with the server')
@@ -27,6 +25,7 @@ def start_game() -> None:
         if gameState.turn == connectfour.RED:
             lib.print_game_state(gameState)
             print('')
+            print('You are the Red player. It is your move.')
             while True:
                 col, move = lib.prompt_and_get_move()
                 response = network.send_move(move, col)
@@ -62,12 +61,16 @@ def start_game() -> None:
 
 
 def connection_terminated() -> None:
-    ''' '''
+    """Calls the network handler to terminate the connection and prints a notification to the console"""
     network.terminate_connection()
     print('The connection to the server was terminated')
 
 
 def get_username() -> str:
+    """
+    Prompts the user to enter a username and then returns it
+    :return: The username entered by the user
+    """
     while True:
         print("Please enter your username (without spaces)")
         username = input().strip()
@@ -76,6 +79,10 @@ def get_username() -> str:
 
 
 def get_address_and_port() -> (str, str):
+    """
+    Prompts the user to enter an address to connect to as well as a port
+    :return: A tuple whose first value is the host address and whose second value is the host port
+    """
     print("Please enter an IP address or host to connect to")
     host = input().strip()
     print("Please enter a port to connect to on the given host")

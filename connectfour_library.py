@@ -1,3 +1,4 @@
+# Eric Wolfe 76946154 eawolfe@uci.edu
 import connectfour as lib
 
 DROP_TOP = 'DROP'
@@ -34,11 +35,11 @@ def get_player_symbol(player: int) -> str:
 
 def execute_move(state: lib.GameState, col: int, move: str) -> lib.GameState:
     """
-
-    :param state:
-    :param col:
-    :param move:
-    :return:
+    Executes the give move on the given column for the given GameState
+    :param state: The GameState that this move will be executed on
+    :param col: The column that this move will happen on
+    :param move: The move that will be executed
+    :return: A new GameState with the results of the executed move
     """
     if move == DROP_TOP:
         return lib.drop(state, col - 1)
@@ -64,9 +65,8 @@ def print_game_state(state: lib.GameState) -> None:
 
 def print_turn(state: lib.GameState) -> None:
     """
-
-    :param state:
-    :return:
+    Prints a message to the console that informs the players whose turn it currently is
+    :param state: The GameState that will be used to determine which player has the current turn
     """
     print('It is the ' + get_player_string(state.turn) + ' players turn')
 
@@ -77,7 +77,7 @@ def prompt_and_get_move() -> (int, str):
     :return: A tuple whose first value is the entered column number and whose second value is the move type
     """
     while True:
-        print('Please input a move (drop,pop) and acolumn number (1-7). Example: drop 3')
+        print('Please input a move (drop,pop) and a column number (1-7). Example: drop 3')
         line = input().strip()
 
         move = line[0:4].strip()

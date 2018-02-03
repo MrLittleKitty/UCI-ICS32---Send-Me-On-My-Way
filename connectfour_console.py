@@ -1,3 +1,4 @@
+# Eric Wolfe 76946154 eawolfe@uci.edu
 import connectfour as connect
 import connectfour_library as lib
 
@@ -5,7 +6,7 @@ import connectfour_library as lib
 def start_game() -> None:
     """
     The main entry point for the program.
-    Starts the game of Connect Four.
+    Starts the console version of the connect four game.
     """
     print("Welcome to ICS 32 Connect Four!")
     gameState = connect.new_game()

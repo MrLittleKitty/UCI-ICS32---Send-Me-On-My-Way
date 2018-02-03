@@ -1,3 +1,4 @@
+# Eric Wolfe 76946154 eawolfe@uci.edu
 import socket as socket
 import connectfour_library as lib
 
@@ -19,11 +20,11 @@ TERMINATED = 'TERMINATED'
 
 def connect_to_game_server(address: str, port: str, username: str) -> bool:
     """
-
-    :param address:
-    :param port:
-    :param username:
-    :return:
+    Attempts to connect to a connect four game server at the given host address and host port
+    :param address: The host address to attempt the connection to
+    :param port: The host port that the connection should go through
+    :param username: The username to use when connecting to the game server
+    :return: True if the connection was successful and the game is ready to be played. False otherwise
     """
     try:
         global connection
@@ -33,13 +34,13 @@ def connect_to_game_server(address: str, port: str, username: str) -> bool:
         in_stream = connection.makefile('r')
         out_stream = connection.makefile('w')
 
-        write_stream('I32CFSP_HELLO ' + username + client_end_of_line)
+        _write_stream('I32CFSP_HELLO ' + username + client_end_of_line)
 
         response = in_stream.readline()
         if response[0:7] != 'WELCOME' or response[8:] != (username + server_end_of_line):
             return False
 
-        write_stream('AI_GAME' + server_end_of_line)
+        _write_stream('AI_GAME' + server_end_of_line)
 
         response = in_stream.readline()
         if response != ('READY' + server_end_of_line):
@@ -53,16 +54,16 @@ def connect_to_game_server(address: str, port: str, username: str) -> bool:
 
 def send_move(move: str, col: int) -> str:
     """
-
-    :param move:
-    :param col:
-    :return:
+    Sends the given move on the given column to the connected game server
+    :param move: The move that will be sent to the connected game server
+    :param col: The column that the move will be executed on
+    :return: The response from the game server (TERMINATED, SUCCESS, ILLEGAL, WINNER_RED, WINNER_YELLOW)
     """
     try:
         if move == lib.DROP_TOP:
-            write_stream(drop + ' ' + str(col) + client_end_of_line)
+            _write_stream(drop + ' ' + str(col) + client_end_of_line)
         elif move == lib.POP_BOTTOM:
-            write_stream(pop + ' ' + str(col) + client_end_of_line)
+            _write_stream(pop + ' ' + str(col) + client_end_of_line)
 
         global in_stream
         response = in_stream.readline()
@@ -85,8 +86,8 @@ def send_move(move: str, col: int) -> str:
 
 def receive_move() -> (str, int) or TERMINATED:
     """
-
-    :return:
+    Receives the other player's move from connected game server.
+    :return: Either a tuple whose first value is the move type and whose second value is the column OR TERMINATED.
     """
     try:
         global in_stream
@@ -118,11 +119,10 @@ def receive_move() -> (str, int) or TERMINATED:
         return TERMINATED
 
 
-def write_stream(text: str) -> None:
+def _write_stream(text: str) -> None:
     """
-
-    :param text:
-    :return:
+    Writes the given text to the network output stream and then flushes the stream
+    :param text: The text that will be written to the output stream
     """
     global out_stream
     out_stream.write(text)
@@ -130,6 +130,7 @@ def write_stream(text: str) -> None:
 
 
 def terminate_connection() -> None:
+    """Closes the network connection and closes all related streams"""
     global out_stream
     global in_stream
     global connection

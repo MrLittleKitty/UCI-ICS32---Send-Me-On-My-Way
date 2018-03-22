@@ -1,4 +1,3 @@
-# Eric Wolfe 76946154 eawolfe@uci.edu
 import connectfour as connectfour
 import connectfour_library as lib
 import connectfour_protocol as network

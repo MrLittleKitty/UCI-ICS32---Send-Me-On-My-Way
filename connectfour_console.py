@@ -1,4 +1,3 @@
-# Eric Wolfe 76946154 eawolfe@uci.edu
 import connectfour as connect
 import connectfour_library as lib
 
